@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Todo tiene su lugar</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7fafc;--surf:#fff;--tx:#1d2b3a;--mut:#52657a;--ln:#d5e0ea;--r:#e5484d;--b:#2f6fed;--y:#f5b50a;--ok:#1f9d63;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101821;--surf:#1a2633;--tx:#eef3f8;--mut:#a9b9c9;--ln:#2e3e50;--r:#ff6b70;--b:#6a9bff;--y:#ffc933;--ok:#43c88a}}
+*{box-sizing:border-box}html{scroll-padding-top:70px;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font:400 18px/1.55 Nunito,system-ui,sans-serif}
+h1,h2{font-family:Fredoka,system-ui,sans-serif;font-weight:600;line-height:1.2;margin:0 0 .5em}
+h1{font-size:2.5rem}h2{font-size:1.5rem}
+main{max-width:680px;margin:0 auto;padding:0 18px 40px}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:8px;overflow-x:auto;padding:10px 18px;border-bottom:1px solid var(--ln)}
+nav a{flex:none;padding:8px 14px;border-radius:99px;border:2px solid var(--ln);color:var(--tx);text-decoration:none;font-weight:700;font-size:.95rem}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--b);outline-offset:2px}
+.hero{padding:28px 0 8px}.hero p{color:var(--mut);font-size:1.1rem;margin:0}
+.dots{display:flex;gap:10px;margin-bottom:14px}.dots i{width:26px;height:26px;display:block}
+.dots i:nth-child(1){background:var(--r);border-radius:50%}.dots i:nth-child(2){background:var(--b);border-radius:4px}.dots i:nth-child(3){background:var(--y);clip-path:polygon(50% 0,100% 100%,0 100%)}
+section{padding:22px 0 4px}
+.box{background:var(--surf);border:2px solid var(--ln);border-radius:16px;padding:14px 16px;margin:10px 0}
+.box p{margin:0}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.three div{background:var(--surf);border:2px solid var(--ln);border-top-width:8px;border-radius:14px;padding:8px 10px;font-size:.95rem}
+.three div:nth-child(1){border-top-color:var(--r)}.three div:nth-child(2){border-top-color:var(--b)}.three div:nth-child(3){border-top-color:var(--y)}
+.three b{font-family:Fredoka,system-ui,sans-serif;display:block}
+details{background:var(--surf);border:2px solid var(--ln);border-radius:14px;margin:10px 0;padding:0 16px}
+summary{cursor:pointer;font:600 1.1rem Fredoka,system-ui,sans-serif;padding:14px 0;min-height:48px}
+details[open] summary{border-bottom:1px solid var(--ln);margin-bottom:10px}
+details p,details ul{margin:0 0 12px}ul{padding-left:1.2em}
+.c1{border-left:10px solid var(--r)}.c2{border-left:10px solid var(--b)}.c3{border-left:10px solid var(--y)}
+.obs label{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--ln);cursor:pointer}
+.obs input{width:26px;height:26px;flex:none;accent-color:var(--ok)}
+#res{font-weight:700;margin-top:12px!important}
+.lv{display:flex;gap:8px;margin:10px 0}
+.lv button,.bin,.again{font:600 1rem Fredoka,system-ui,sans-serif;color:var(--tx);background:var(--surf);border:2px solid var(--ln);border-radius:14px;padding:12px;cursor:pointer;min-height:48px}
+.lv button{flex:1}.lv button[aria-pressed="true"]{background:var(--b);border-color:var(--b);color:#fff}
+.pool{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;min-height:96px;padding:10px;border:2px dashed var(--ln);border-radius:14px}
+.it{width:76px;height:76px;display:flex;align-items:center;justify-content:center;background:none;border:3px solid transparent;border-radius:14px;cursor:pointer;padding:0}
+.it[aria-pressed="true"]{border-color:var(--tx)}
+.sh{display:block;background:var(--c)}.sh.circ{border-radius:50%}.sh.sq{border-radius:6px}.sh.tri{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.bins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.bin{display:flex;flex-direction:column;align-items:center;gap:6px;min-height:120px;justify-content:flex-start}
+.bin .in{display:flex;flex-wrap:wrap;gap:3px;justify-content:center}.bin .in .sh{transform:scale(.5);margin:-10px}
+#msg{min-height:3em;margin:12px 0 0!important;font-weight:700;text-align:center}
+.again{margin-top:6px;width:100%}
+@media(prefers-reduced-motion:no-preference){.shake{animation:s .3s}}@keyframes s{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+footer{color:var(--mut);font-size:.9rem;padding-top:22px}
+</style>
+</head>
+<body>
+<nav aria-label="Secciones"><a href="#que">Qué es</a><a href="#casa">Juegos en casa</a><a href="#celular">Juego en el celular</a><a href="#mitos">Mitos</a><a href="#observo">Observo</a></nav>
+<main>
+<header class="hero">
+<div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+<h1>Todo tiene su lugar</h1>
+<p>Guía rápida para familias de prekinder sobre cómo los niños aprenden a agrupar.</p>
+</header>
+
+<section id="que">
+<h2>Agrupar, la base de pensar</h2>
+<div class="box"><p>Agrupar es reunir cosas que se parecen. Antes de contar, comparar o resolver problemas, los niños aprenden a mirar qué tienen en común. Es una habilidad que se construye con la experiencia diaria: al guardar la ropa, poner la mesa o ordenar juguetes. Los niños usan tres pistas:</p></div>
+<div class="three"><div><b>Color</b>rojo, azul…</div><div><b>Forma</b>círculo, cuadrado…</div><div><b>Tamaño</b>grande, pequeño…</div></div>
+<p><b>¿Cómo avanzan?</b> Cada niño lleva su propio ritmo, pero suele darse este camino:</p><ul><li>Primero agrupa por color.</li><li>Luego reconoce y usa las formas.</li><li>Después compara tamaños.</li><li>Más adelante explica por qué agrupó así y cambia de criterio.</li></ul>
+</section>
+
+<section id="casa">
+<h2>Juegos de 5 minutos en casa</h2>
+<p>No necesitan pantallas ni materiales especiales. Toque cada uno. Cuando quieran practicar lo mismo en versión digital, está el <a href="#celular">juego en el celular</a>.</p>
+<details class="c1"><summary>Misión color</summary>
+<p><b>Necesita:</b> calcetines, tapas, lápices o juguetes de varios colores.</p><ul><li>Ponga tres recipientes o tres hojas.</li><li>Pida: “Pon aquí todo lo azul”.</li><li>Al final, revisen juntos que cada grupo tenga un solo color.</li></ul></details>
+<details class="c2"><summary>Cazadores de formas</summary>
+<p><b>Necesita:</b> galletas, platos, cajas, tapas y cubiertos.</p><ul><li>Pregunte: “¿Qué cosas son redondas?”.</li><li>Busquen por la casa objetos redondos, cuadrados o con puntas.</li><li>Nombren cada forma en voz alta: círculo, cuadrado, triángulo.</li></ul></details>
+<details class="c3"><summary>Familia de tamaños</summary>
+<p><b>Necesita:</b> zapatos, ollas, peluches o frutas de distinto tamaño.</p><ul><li>Formen tres grupos: grande, mediano y pequeño.</li><li>Comparen de a dos: “¿Cuál es más grande?”.</li><li>Si quiere más reto, ordénenlos de menor a mayor.</li></ul></details>
+<details><summary>Cómo acompañar</summary><ul><li>Espere unos segundos antes de ayudar.</li><li>Pregunte: “¿Por qué va aquí?” o “¿Qué tienen en común?”.</li><li>Si hay un error, diga: “Miremos juntos este grupo”.</li><li>Reconozca el esfuerzo: “Lo pensaste con calma”.</li><li>Termine cuando su hijo o hija quiera parar.</li></ul></details><details><summary>Para que participen todos</summary><ul><li>Empiece con pocos objetos (4 o 6) y aumente de a poco.</li><li>Muestre un ejemplo en cada grupo.</li><li>Ofrezca objetos fáciles de tomar y seguros, sin piezas pequeñas.</li><li>Puede jugar en el suelo o en la mesa, solo o con otros familiares.</li></ul></details>
+</section>
+
+<section id="celular">
+<h2>Juego en el celular</h2>
+<p>Es el mismo juego de la casa, en versión digital. Lo ideal es probar primero con <a href="#casa">objetos reales</a> y luego usar esta versión. Acompañe a su hijo o hija y hágale las mismas preguntas.</p>
+<div class="box">
+<p style="margin-bottom:8px">Elija un nivel. Toque una ficha y luego el grupo donde va.</p>
+<div class="lv" role="group" aria-label="Nivel">
+<button data-l="color" aria-pressed="true">Color</button><button data-l="forma" aria-pressed="false">Forma</button><button data-l="tamano" aria-pressed="false">Tamaño</button>
+</div>
+<div class="pool" id="pool" aria-label="Fichas por clasificar"></div>
+<div class="bins" id="bins"></div>
+<p id="msg" role="status" aria-live="polite"></p>
+<button class="again" id="again">Jugar de nuevo</button>
+</div>
+</section>
+
+<section id="mitos">
+<h2>Mitos y realidades</h2>
+<details><summary>“Si no agrupa a esta edad, algo anda mal.”</summary><p>Es una habilidad que se desarrolla poco a poco y cada niño tiene su tiempo.</p></details>
+<details><summary>“Solo sirve para matemáticas.”</summary><p>También ayuda al lenguaje, porque implica nombrar y comparar.</p></details>
+<details><summary>“Un error es no haber entendido.”</summary><p>Un error muestra cómo está pensando. Es parte de aprender.</p></details>
+<details><summary>“Hay que usar fichas o tarjetas.”</summary><p>No es necesario. Los objetos de la casa son un excelente material.</p></details>
+</section>
+
+<section id="observo" class="obs">
+<h2>Lo que puedo observar</h2>
+<p style="margin:0 0 8px">Marque lo que ha visto en casa.</p>
+<div class="box">
+<label><input type="checkbox"> Nombra colores</label>
+<label><input type="checkbox"> Reconoce formas</label>
+<label><input type="checkbox"> Distingue grande y pequeño</label>
+<label><input type="checkbox"> Junta cosas parecidas por iniciativa propia</label>
+<label><input type="checkbox"> Explica por qué dos cosas van juntas</label>
+<label><input type="checkbox"> Corrige solo cuando algo no encaja</label>
+<p id="res" role="status" aria-live="polite"></p>
+</div>
+<div class="box"><p>¿Quiere conversar sobre sus avances? La educadora del curso puede orientarle.</p></div>
+<footer>Recurso digital para familias de prekinder.</footer>
+</section>
+</main>
+<script>
+(function(){
+var cb=document.querySelectorAll('.obs input'),res=document.getElementById('res');
+function upd(){var n=0;cb.forEach(function(c){if(c.checked)n++});
+res.textContent=n===0?'':n+' de '+cb.length+' marcadas. '+(n===cb.length?'¡Gran observación!':'Cada avance cuenta.')}
+cb.forEach(function(c){c.onchange=upd});
+})();
+</script>
+<script>
+(function(){
+var C={r:'var(--r)',b:'var(--b)',y:'var(--y)'},CN={r:'Rojo',b:'Azul',y:'Amarillo'};
+var FN={circ:'Círculo',sq:'Cuadrado',tri:'Triángulo'},TN={s:'Pequeño',m:'Mediano',l:'Grande'},TS={s:30,m:48,l:66};
+var lvl='color',sel=null,left=0;
+var pool=document.getElementById('pool'),bins=document.getElementById('bins'),msg=document.getElementById('msg');
+function keys(){return lvl==='color'?['r','b','y']:lvl==='forma'?['circ','sq','tri']:['s','m','l']}
+function name(k){return lvl==='color'?CN[k]:lvl==='forma'?FN[k]:TN[k]}
+function shape(it){var s=document.createElement('span');s.className='sh '+it.f;s.style.setProperty('--c',C[it.c]);s.style.width=s.style.height=TS[it.t]+'px';return s}
+function val(it){return lvl==='color'?it.c:lvl==='forma'?it.f:it.t}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function say(t){msg.textContent=t}
+function start(){
+sel=null;pool.innerHTML='';bins.innerHTML='';var ks=keys(),items=[];
+ks.forEach(function(k){for(var n=0;n<2;n++){var it={c:'b',f:'circ',t:'m'};if(lvl==='color')it.c=k;else if(lvl==='forma')it.f=k;else it.t=k;items.push(it)}});
+left=items.length;
+shuffle(items).forEach(function(it){var b=document.createElement('button');b.className='it';b.setAttribute('aria-pressed','false');b.setAttribute('aria-label',CN[it.c]+', '+FN[it.f]+', '+TN[it.t]);b.appendChild(shape(it));
+b.onclick=function(){if(sel)sel.b.setAttribute('aria-pressed','false');sel={it:it,b:b};b.setAttribute('aria-pressed','true');say('Ahora toque el grupo donde va.')};pool.appendChild(b)});
+ks.forEach(function(k){var d=document.createElement('button');d.className='bin';d.innerHTML='<span>'+name(k)+'</span><span class="in"></span>';
+d.onclick=function(){
+if(!sel){say('Primero toque una ficha.');return}
+if(val(sel.it)===k){d.querySelector('.in').appendChild(shape(sel.it));sel.b.remove();sel=null;left--;
+say(left?'¡Muy bien! Pregunte: “¿Por qué va aquí?”':'¡Terminaron! Pregunte: “¿Qué tienen en común las fichas de cada grupo?”')}
+else{d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');say('Miremos otra vez. ¿Qué tienen en común?')}};
+bins.appendChild(d)});
+say('Toque una ficha para comenzar.')}
+document.querySelectorAll('.lv button').forEach(function(b){b.onclick=function(){lvl=b.dataset.l;document.querySelectorAll('.lv button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});start()}});
+document.getElementById('again').onclick=start;
+start();
+})();
+</script>
+</body>
+</html>
